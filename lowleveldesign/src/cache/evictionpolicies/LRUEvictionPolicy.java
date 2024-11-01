@@ -1,9 +1,7 @@
-package cache.evictionPolicies.strategies;
+package cache.evictionpolicies;
 
 
-import cache.evictionPolicies.IEvictionPolicy;
-
-import java.util.HashMap;
+import cache.evictionpolicies.IEvictionPolicy;
 
 public class LRUEvictionPolicy<Key> implements IEvictionPolicy<Key> {
 

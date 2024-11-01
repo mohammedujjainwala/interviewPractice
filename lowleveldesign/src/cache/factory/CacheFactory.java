@@ -1,6 +1,6 @@
 package cache.factory;
 
-import cache.evictionPolicies.strategies.FIFOEvictionPolicy;
+import cache.evictionpolicies.FIFOEvictionPolicy;
 import cache.services.CacheService;
 import cache.services.ICacheService;
 import cache.storage.InternalStorage;

@@ -1,4 +1,4 @@
-package cache.evictionPolicies;
+package cache.evictionpolicies;
 
 public interface IEvictionPolicy<Key> {
     void keyAccessed(Key key);

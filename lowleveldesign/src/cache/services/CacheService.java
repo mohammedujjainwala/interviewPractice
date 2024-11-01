@@ -1,6 +1,6 @@
 package cache.services;
 
-import cache.evictionPolicies.IEvictionPolicy;
+import cache.evictionpolicies.IEvictionPolicy;
 import cache.exception.CacheFullException;
 import cache.storage.IStorage;
 

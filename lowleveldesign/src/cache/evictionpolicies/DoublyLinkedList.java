@@ -1,4 +1,4 @@
-package cache.evictionPolicies.strategies;
+package cache.evictionpolicies;
 
 public class DoublyLinkedList<Value> {
     private DoublyLinkedListNode<Value> head,last;
