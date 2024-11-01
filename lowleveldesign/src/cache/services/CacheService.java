@@ -17,7 +17,7 @@ public class CacheService<Key, Value> implements ICacheService<Key, Value> {
         try {
             addKeyValue(key, value);
         }catch (CacheFullException e){
-            System.out.println("Storage full Key :"+key+" Value:"+value);
+            System.out.println("Storage full while inserting Key:"+key+" Value:"+value);
             Key evictedKey = evictionPolicy.evictKey();
             System.out.println("Evicting key:"+evictedKey);
             storage.remove(evictedKey);
