@@ -1,8 +1,8 @@
-package cache.services;
+package cacheSystem.services;
 
-import cache.evictionpolicies.IEvictionPolicy;
-import cache.exception.CacheFullException;
-import cache.storage.IStorage;
+import cacheSystem.evictionpolicies.IEvictionPolicy;
+import cacheSystem.exception.CacheFullException;
+import cacheSystem.storage.IStorage;
 
 public class CacheService<Key, Value> implements ICacheService<Key, Value> {
     private IEvictionPolicy<Key> evictionPolicy;
@@ -42,4 +42,10 @@ public class CacheService<Key, Value> implements ICacheService<Key, Value> {
         evictionPolicy.keyAccessed(key);
         return value;
     }
+
+    @Override
+    public double getUsage() {
+        return storage.getUsage();
+    }
+
 }
