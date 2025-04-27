@@ -1,8 +1,13 @@
 package parkinglot.parkingstrategy;
 
-import parkinglot.parkingspot.ParkingSpot;
+import parkinglot.models.GateInfo;
+import parkinglot.models.ParkingSpotInfo;
+import parkinglot.parkingspot.models.impl.ParkingSpot;
+
+import java.util.Optional;
 
 public interface IParkingStrategy {
-    String nextParkingSpotId(int entryGateNo);
-    void addEmptyParkingSpot(ParkingSpot parkingSpot);
+    boolean hasAvailableSpot();
+    Optional<String> nextParkingSpot(GateInfo gateInfo);
+    void addEmptyParkingSpot(ParkingSpotInfo parkingSpot);
 }

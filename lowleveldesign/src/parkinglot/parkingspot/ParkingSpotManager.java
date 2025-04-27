@@ -1,62 +1,60 @@
 package parkinglot.parkingspot;
 
-import parkinglot.enums.VehicleType;
-import parkinglot.exceptions.FreeParkingSpotNotFound;
-import parkinglot.exceptions.ParkingSpotHandlerNotFound;
+import parkinglot.enums.ParkingSpotType;
+import parkinglot.models.GateInfo;
+import parkinglot.models.ParkingSpotInfo;
 import parkinglot.models.Vehicle;
+import parkinglot.parkingspot.models.IParkingSpot;
+import parkinglot.parkingspot.models.impl.ParkingSpot;
 import parkinglot.parkingstrategy.IParkingStrategy;
 
+import javax.swing.text.html.Option;
 import java.util.Map;
+import java.util.Optional;
 
-public abstract class ParkingSpotManager {
-    private Map<String, ParkingSpot> parkingSpots;
+public class ParkingSpotManager implements IParkingSpotManager{
+    private Map<String, IParkingSpot> parkingSpots;
     private IParkingStrategy parkingStrategy;
-    private ParkingSpotManager next;
+    private ParkingSpotType type;
+    private IParkingSpotManager next;
 
-    public ParkingSpotManager(final Map<String, ParkingSpot> parkingSpots, final IParkingStrategy parkingStrategy,
-                              final ParkingSpotManager next) {
+    public ParkingSpotManager(Map<String, IParkingSpot> parkingSpots, IParkingStrategy parkingStrategy, ParkingSpotType type, IParkingSpotManager next) {
         this.parkingSpots = parkingSpots;
         this.parkingStrategy = parkingStrategy;
+        this.type = type;
         this.next = next;
     }
 
-    public ParkingSpot findFreeParkingSpot(VehicleType vehicleType, int entryGateNo) {
-        if(!canHandle(vehicleType)){
-            return next.findFreeParkingSpot(vehicleType, entryGateNo);
-        }
-        String parkingSpotId = parkingStrategy.nextParkingSpotId(entryGateNo);
-        if(parkingSpotId == null){
-            throw new FreeParkingSpotNotFound();
-        }
-        return parkingSpots.get(parkingStrategy.nextParkingSpotId(entryGateNo));
+    @Override
+    public boolean isParkingSpotAvailable() {
+        return parkingStrategy.hasAvailableSpot();
     }
 
-
-    public void parkVehicle(Vehicle vehicle, String spotId) {
-        if(!canHandle(vehicle.getVehicleType())){
-            next.parkVehicle(vehicle, spotId);
+    @Override
+    public Optional<ParkingSpotInfo> parkVehicle(Vehicle vehicle, GateInfo gateInfo) {
+        final Optional<String> parkingSpotId = parkingStrategy.nextParkingSpot(gateInfo);
+        if(parkingSpotId.isEmpty()){
+            return Optional.empty();
         }
-        ParkingSpot parkingSpot = parkingSpots.get(spotId);
-        parkingSpot.parkVehicle(vehicle);
+        final IParkingSpot parKingSpot = parkingSpots.get(parkingSpotId.get());
+        if(parKingSpot.parkVehicle(vehicle)){
+            return Optional.of(new ParkingSpotInfo(parkingSpotId.get(), parKingSpot.getParkingSpotInfo().getParkingSpotType()
+                    , parKingSpot.getParkingSpotInfo().getLocation()));
+        }
+        return Optional.empty();
     }
 
+    @Override
     public void vacateVehicleFromSpot(String spotId) {
-        ParkingSpot parkingSpot = parkingSpots.get(spotId);
-        if(!canHandle(parkingSpot.getVehicle().getVehicleType())){
-            next.vacateVehicleFromSpot(spotId);
-        }
-        parkingSpot.removeVehicle();
-        parkingStrategy.addEmptyParkingSpot(parkingSpots.get(spotId));
+        final IParkingSpot parKingSpot = parkingSpots.get(spotId);
+        parkingStrategy.addEmptyParkingSpot(parKingSpot.getParkingSpotInfo());
     }
 
-    private boolean canHandle(VehicleType vehicleType){
-        if(!vehicleType.equals(getSupportedVehicleType())){
-            if(next == null){
-                throw new ParkingSpotHandlerNotFound();
-            }
-        }
-        return true;
+    public ParkingSpotType getType() {
+        return type;
     }
 
-    public abstract VehicleType getSupportedVehicleType();
+    public IParkingSpotManager getNext() {
+        return next;
+    }
 }

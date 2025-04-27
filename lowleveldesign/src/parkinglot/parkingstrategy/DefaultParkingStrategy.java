@@ -1,29 +1,45 @@
 package parkinglot.parkingstrategy;
 
-import parkinglot.parkingspot.ParkingSpot;
+import parkinglot.models.GateInfo;
+import parkinglot.models.ParkingSpotInfo;
+import parkinglot.parkingspot.models.IParkingSpot;
+import parkinglot.parkingspot.models.impl.ParkingSpot;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 
 public class DefaultParkingStrategy implements IParkingStrategy {
-    List<Queue<String>> parkingSpotQueues;//based on floor
+    private List<Queue<String>> parkingSpotQueues; //based on floor
+
     public DefaultParkingStrategy(final List<Queue<String>> parkingSpotQueues) {
         this.parkingSpotQueues = parkingSpotQueues;
     }
 
     @Override
-    public synchronized String nextParkingSpotId(final int entryGateNo) {
+    public boolean hasAvailableSpot() {
         for(Queue<String> parkingSpotQueue: parkingSpotQueues){
             if(parkingSpotQueue.isEmpty()){
                 continue;
             }
-            return parkingSpotQueue.poll();
+            return true;
         }
-        return null;
+        return false;
     }
 
     @Override
-    public void addEmptyParkingSpot(final ParkingSpot parkingSpot) {
-        parkingSpotQueues.get(parkingSpot.getLocation().getFloorNo()).add(parkingSpot.getId());
+    public synchronized Optional<String> nextParkingSpot(final GateInfo gateInfo) {
+        for(Queue<String> parkingSpotQueue: parkingSpotQueues){
+            if(parkingSpotQueue.isEmpty()){
+                continue;
+            }
+            return Optional.of(parkingSpotQueue.poll());
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public void addEmptyParkingSpot(final ParkingSpotInfo parkingSpot) {
+        parkingSpotQueues.get(parkingSpot.getLocation().getFloorNo()-1).add(parkingSpot.getId());
     }
 }
