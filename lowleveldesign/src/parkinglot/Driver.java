@@ -24,14 +24,14 @@ public class Driver {
         System.out.println("Two wheeler Parking Space Available : "+entryGate.parkingSpaceAvailable(VehicleType.TWO_WHEELER));
         if(entryGate.parkingSpaceAvailable(VehicleType.TWO_WHEELER)){
             Ticket ticket = entryGate.bookParkingSpot(new Vehicle(VehicleType.TWO_WHEELER,"123456"));
-            System.out.println("Two wheeler Parking Space Available : "+entryGate.parkingSpaceAvailable(VehicleType.TWO_WHEELER));
+            System.out.println("Two wheeler Parking Space Available After booking : "+entryGate.parkingSpaceAvailable(VehicleType.TWO_WHEELER));
             System.out.println("Four wheeler Parking Space Available : "+entryGate.parkingSpaceAvailable(VehicleType.FOUR_WHEELER));
             Thread.sleep(1000);
             double price = exitGate.getPrice(ticket);
             System.out.println("Two wheeler park price : "+price);
             exitGate.payment(PaymentType.UPI, price);
             exitGate.vacateSpot(ticket.getSpot());
-            System.out.println("Two wheeler Parking Space Available : "+entryGate.parkingSpaceAvailable(VehicleType.TWO_WHEELER));
+            System.out.println("Two wheeler Parking Space Available after exit : "+entryGate.parkingSpaceAvailable(VehicleType.TWO_WHEELER));
         }
     }
 }
